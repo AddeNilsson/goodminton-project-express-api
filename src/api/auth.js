@@ -1,0 +1,18 @@
+import bcrypt from 'bcrypt';
+import { User } from '../models/user.model';
+
+export const signIn = async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send('No user found');
+
+  const match = await bcrypt.compare(req.body.password, user.password);
+
+  if (!match) return res.status(400).send('Password missmatch');
+
+  const token = user.generateAuthToken();
+  res.header("x-auth-token", token).send({
+    _id: user._id,
+    name: user.name,
+    email: user.email
+  });
+};
