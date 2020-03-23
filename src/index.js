@@ -1,9 +1,16 @@
 import express from 'express';
-import config from './config'
 import mongoose from 'mongoose';
+import morgan from 'morgan';
+import fs from 'fs';
+import path from 'path';
+
+import config from './config'
 import routes from './routes';
 
 const app = express();
+
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' });
 
 if (!config.jwtSecretKey) {
   console.error("FATAL ERROR: no jwt key set.");
@@ -16,6 +23,9 @@ mongoose
   .catch(err => console.error("Could not connect to MongoDB..."));
 
 app.use(express.json());
+
+// setup logger
+app.use(morgan('combined', { stream: accessLogStream }));
 
 routes(app);
 
