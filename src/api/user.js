@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
-import { User, validate } from '../models/user.model';
+import { User, validateUser } from '../models/user.model';
+import { PlayerStats, getInitialPlayerStats } from '../models/playerStats.model';
 
 export const getCurrentUser = async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
@@ -7,9 +8,8 @@ export const getCurrentUser = async (req, res) => {
 };
 
 export const signUp = async (req, res) => {
-  console.log(req.body);
   // validate
-  const { error } = validate(req.body);
+  const { error } = validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   // find an existing user
@@ -22,9 +22,16 @@ export const signUp = async (req, res) => {
     email: req.body.email
   });
   user.password = await bcrypt.hash(user.password, 10);
-  await user.save();
 
+  await user.save();
   const token = user.generateAuthToken();
+  try {
+    const playerStats = new PlayerStats({ userId: user._id, touched: Date.now() })
+    await playerStats.save();
+  } catch(e) {
+    return res.status(400).end('Missing field');
+  }
+
   res.header("x-auth-token", token).send({
     _id: user._id,
     name: user.name,
