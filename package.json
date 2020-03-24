@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "NODE_ENV=development nodemon --exec babel-node src/index.js",
-    "build": "webpack --mode production --env.NODE_ENV=production",
-    "serveBuild": "PORT=3001 node ./build/server-bundle.js"
+    "build": "webpack -p --env.NODE_ENV=production",
+    "serveBuild": "PORT=3001 node ./build/server-bundle.js",
+    "heroku-postbuild": "webpack -p"
   },
   "author": "Adde A. Nilsson",
   "license": "ISC",
@@ -38,5 +39,8 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-node-externals": "^1.7.2"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
