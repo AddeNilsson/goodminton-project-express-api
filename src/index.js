@@ -9,8 +9,6 @@ import routes from './routes';
 
 const app = express();
 
-// create a write stream (in append mode)
-var accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' });
 
 if (!config.jwtSecretKey) {
   console.error("FATAL ERROR: no jwt key set.");
@@ -24,8 +22,11 @@ mongoose
 
 app.use(express.json());
 
-// setup logger
-app.use(morgan('combined', { stream: accessLogStream }));
+if (config.nodeEnv === 'development') {
+  // create a write stream (in append mode)
+  var accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' });
+  app.use(morgan('combined', { stream: accessLogStream }));
+}
 
 routes(app);
 
