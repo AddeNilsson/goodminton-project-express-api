@@ -27,13 +27,11 @@ const PlayerStatsSchema = new mongoose.Schema({
   },
   winRatio: {
     type: Number,
-    // required: true,
     min: 0,
     default: 0,
   },
   gamesTotal: {
     type: Number,
-    // required: true,
     min: 0,
     default: 0,
   },
@@ -43,6 +41,17 @@ const PlayerStatsSchema = new mongoose.Schema({
   }
 });
 
+PlayerStatsSchema.methods.computeNewStats = function ({ won, lost, walkOvers }) {
+  const newStats = {
+    won: this.won + won,
+    lost: this.lost + lost + (walkOvers * 6),
+    walkOvers: this.walkOvers + walkOvers,
+    gamesTotal: this.gamesTotal + won + lost + (walkOvers * 6),
+    touched: Date.now(),
+  };
+  newStats.winRatio = Math.round((newStats.won / newStats.gamesTotal) * 100) / 100;
+  return newStats;
+}
 
 export const PlayerStats = mongoose.model('PlayerStats', PlayerStatsSchema);
 

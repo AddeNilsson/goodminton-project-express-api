@@ -25,6 +25,7 @@ const UserSchema = new mongoose.Schema({
   },
   //give different access rights if admin or not
   isAdmin: Boolean,
+  playerStats: [{ type: mongoose.Types.ObjectId, ref: 'PlayerStats' }],
 });
 
 
