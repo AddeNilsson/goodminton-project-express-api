@@ -38,7 +38,7 @@ const PlayerStatsSchema = new mongoose.Schema({
   touched: {
     type: Date,
     required: true,
-  }
+  },
 });
 
 PlayerStatsSchema.methods.computeNewStats = function ({ won, lost, walkOvers }) {

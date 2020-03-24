@@ -23,13 +23,10 @@ const UserSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 255
   },
-  //give different access rights if admin or not
   isAdmin: Boolean,
   playerStats: [{ type: mongoose.Types.ObjectId, ref: 'PlayerStats' }],
 });
 
-
-//custom method to generate authToken
 UserSchema.methods.generateAuthToken = function() {
   const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.jwtSecretKey, { expiresIn: '1d' });
   return token;
@@ -37,7 +34,6 @@ UserSchema.methods.generateAuthToken = function() {
 
 export const User = mongoose.model('User', UserSchema);
 
-//function to validate user
 export const validateUser = (user) => {
   const schema = {
     name: Joi.string().min(3).max(50).required(),

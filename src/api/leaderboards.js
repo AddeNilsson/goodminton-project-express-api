@@ -1,6 +1,6 @@
 import { User } from '../models/user.model';
 
-/** GET w. Stats*/
+/** GET UserModel populated with PlayerStats */
 export const getUsersWithStats = async (req, res) => {
   const users = await User
     .find()
