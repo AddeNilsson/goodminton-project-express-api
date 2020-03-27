@@ -1,3 +1,8 @@
 {
-  "extends": "airbnb"
+  "extends": ["airbnb", "eslint:recommended"],
+  "rules": {
+    "no-underscore-dangle": "off",
+    "no-console": "off",
+    "func-names": "off"
+  }
 }

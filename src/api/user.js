@@ -4,17 +4,17 @@ import { PlayerStats } from '../models/playerStats.model';
 
 /** GET */
 export const getCurrentUser = async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password");
+  const user = await User.findById(req.user._id).select('-password');
   res.send(user);
 };
 
 export const getUsers = async (req, res) => {
-  const users = await User.find().select("-password");
+  const users = await User.find().select('-password');
   res.send(users);
 };
 
 export const getUser = async (req, res) => {
-  const user = await User.find({ _id: req.params.userId }).select("-password");
+  const user = await User.find({ _id: req.params.userId }).select('-password');
   res.send(user);
 };
 
@@ -24,7 +24,7 @@ export const signUp = async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.findOne({ email: req.body.email }); // find an existing user
-  if (user) return res.status(400).send("User already registered.");
+  if (user) return res.status(400).send('User already registered.');
 
   user = new User({
     name: req.body.name,
@@ -40,14 +40,14 @@ export const signUp = async (req, res) => {
     user.playerStats = [playerStats._id];
     await user.save();
     await playerStats.save();
-  } catch(e) {
+  } catch (e) {
     return res.status(400).send('Error creating user');
   }
 
-  res.header("x-auth-token", token).send({
+  return res.header('x-auth-token', token).send({
     _id: user._id,
     name: user.name,
-    email: user.email
+    email: user.email,
   });
 };
 
@@ -55,5 +55,5 @@ export const signUp = async (req, res) => {
 export const deleteUsers = async (req, res) => { /** Clear all but SuperUser */
   if (!req.user.isAdmin) return res.status(400).send('Permission Denied');
   const deleted = await User.where('_id').ne(req.user._id).deleteMany();
-  res.send(deleted);
+  return res.send(deleted);
 };

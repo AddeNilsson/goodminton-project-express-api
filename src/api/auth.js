@@ -10,9 +10,11 @@ export const signIn = async (req, res) => {
   if (!match) return res.status(400).send('Password missmatch');
 
   const token = user.generateAuthToken();
-  res.header("x-auth-token", token).send({
+  return res.header('x-auth-token', token).send({
     _id: user._id,
     name: user.name,
-    email: user.email
+    email: user.email,
   });
 };
+
+export const removeWhenNextDefined = () => false;

@@ -24,7 +24,8 @@ export const updatePlayerStats = async (req, res) => {
   const newStats = target.computeNewStats(payload);
 
   try {
-    const updated = await PlayerStats.findOneAndUpdate({ userId: targetId }, newStats, { new: true });
+    const updated = await PlayerStats
+      .findOneAndUpdate({ userId: targetId }, newStats, { new: true });
     return res.send(updated);
   } catch (e) {
     console.error(e);
@@ -36,5 +37,5 @@ export const updatePlayerStats = async (req, res) => {
 export const deletePlayerStats = async (req, res) => { /** Clear all but SuperUser */
   if (!req.user.isAdmin) return res.status(400).send('Permission Denied');
   const deleted = await PlayerStats.where('userId').ne(req.user._id).deleteMany();
-  res.send(deleted);
+  return res.send(deleted);
 };

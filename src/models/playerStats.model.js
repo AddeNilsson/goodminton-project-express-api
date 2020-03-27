@@ -1,4 +1,3 @@
-import config from '../config';
 import Joi from 'joi';
 import mongoose from 'mongoose';
 
@@ -51,7 +50,7 @@ PlayerStatsSchema.methods.computeNewStats = function ({ won, lost, walkOvers }) 
   };
   newStats.winRatio = Math.round((newStats.won / newStats.gamesTotal) * 100) / 100;
   return newStats;
-}
+};
 
 export const PlayerStats = mongoose.model('PlayerStats', PlayerStatsSchema);
 
