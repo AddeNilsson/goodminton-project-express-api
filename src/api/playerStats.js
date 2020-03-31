@@ -1,4 +1,5 @@
 import { PlayerStats, validatePlayerStats } from '../models/playerStats.model';
+import { createLog } from '../models/statsLog.model';
 
 /** GET */
 export const getStats = async (req, res) => {
@@ -21,11 +22,15 @@ export const updatePlayerStats = async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const target = await PlayerStats.findOne({ userId: targetId });
-  const newStats = target.computeNewStats(payload);
+  const newStats = payload.revert
+    ? target.computeNewStatsReverted(payload)
+    : target.computeNewStats(payload);
 
   try {
     const updated = await PlayerStats
       .findOneAndUpdate({ userId: targetId }, newStats, { new: true });
+    createLog({ ...payload, userId: req.user._id });
+
     return res.send(updated);
   } catch (e) {
     console.error(e);
@@ -34,7 +39,7 @@ export const updatePlayerStats = async (req, res) => {
 };
 
 /** DELETE */
-export const deletePlayerStats = async (req, res) => { /** Clear all but SuperUser */
+export const deletePlayerStats = async (req, res) => { /** Clear all but admin */
   if (!req.user.isAdmin) return res.status(400).send('Permission Denied');
   const deleted = await PlayerStats.where('userId').ne(req.user._id).deleteMany();
   return res.send(deleted);

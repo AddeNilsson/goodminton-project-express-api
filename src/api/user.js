@@ -52,7 +52,7 @@ export const signUp = async (req, res) => {
 };
 
 /** DELETE */
-export const deleteUsers = async (req, res) => { /** Clear all but SuperUser */
+export const deleteUsers = async (req, res) => { /** Clear all but admin */
   if (!req.user.isAdmin) return res.status(400).send('Permission Denied');
   const deleted = await User.where('_id').ne(req.user._id).deleteMany();
   return res.send(deleted);

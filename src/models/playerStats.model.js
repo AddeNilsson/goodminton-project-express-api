@@ -52,15 +52,32 @@ PlayerStatsSchema.methods.computeNewStats = function ({ won, lost, walkOvers }) 
   return newStats;
 };
 
+PlayerStatsSchema.methods.computeNewStatsReverted = function ({ won, lost, walkOvers }) {
+  const newStats = {
+    won: this.won - won,
+    lost: this.lost - lost - (walkOvers * 6),
+    walkOvers: this.walkOvers - walkOvers,
+    gamesTotal: this.gamesTotal - won - lost - (walkOvers * 6),
+    touched: Date.now(),
+  };
+
+  newStats.winRatio = newStats.gamesTotal > 0
+    ? Math.round((newStats.won / newStats.gamesTotal) * 100) / 100
+    : 0;
+
+  return newStats;
+};
+
 export const PlayerStats = mongoose.model('PlayerStats', PlayerStatsSchema);
 
 export const validatePlayerStats = (stats) => {
   const schema = {
-    won: Joi.number().min(0).required(),
-    lost: Joi.number().min(0).required(),
-    walkOvers: Joi.number().min(0).required(),
-    winRatio: Joi.number().min(0),
-    gamesTotal: Joi.number().min(1),
+    won: Joi.number().required(),
+    lost: Joi.number().required(),
+    walkOvers: Joi.number().required(),
+    winRatio: Joi.number(),
+    gamesTotal: Joi.number(),
+    revert: Joi.boolean(),
   };
 
   return Joi.validate(stats, schema);

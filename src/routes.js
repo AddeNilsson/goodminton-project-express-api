@@ -3,6 +3,7 @@ import * as user from './api/user';
 import * as auth from './api/auth';
 import * as playerStats from './api/playerStats';
 import * as leaderboards from './api/leaderboards';
+import * as logs from './api/statsLog';
 
 export default (app) => {
   /** Users */
@@ -24,4 +25,8 @@ export default (app) => {
   /** Leaderboards */
   app.get('/api/leaderboards', (req, res) => leaderboards.getUsersWithStats(req, res));
   app.get('/api/leaderboards/:userId', (req, res) => leaderboards.getUserWithStats(req, res));
+
+  app.get('/api/logs', requireAuth, (req, res) => logs.getLogs(req, res));
+  app.get('/api/logs/:userId/:logId', requireAuth, (req, res) => logs.getPlayerLogs(req, res));
+  app.put('/api/logs/:userId/:logId', requireAuth, (req, res) => logs.updateLogEntry(req, res));
 };
