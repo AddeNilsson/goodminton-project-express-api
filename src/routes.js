@@ -5,6 +5,7 @@ import * as playerStats from './api/playerStats';
 import * as leaderboards from './api/leaderboards';
 import * as logs from './api/statsLog';
 
+console.log('fix calls to invalid routes..?');
 export default (app) => {
   /** Users */
   app.get('/api/users/current', requireAuth, (req, res) => user.getCurrentUser(req, res));
@@ -14,7 +15,7 @@ export default (app) => {
   app.delete('/api/users', requireAuth, (req, res) => user.deleteUsers(req, res));
 
   /** Auth */
-  app.post('/api/auth/sign-in', (req, res) => auth.signIn(req, res));
+  app.post('/api/auth/sign-in', (req, res, next) => auth.signIn(req, res, next));
 
   /** Stats */
   app.get('/api/stats', (req, res) => playerStats.getStats(req, res));
@@ -27,6 +28,6 @@ export default (app) => {
   app.get('/api/leaderboards/:userId', (req, res) => leaderboards.getUserWithStats(req, res));
 
   app.get('/api/logs', requireAuth, (req, res) => logs.getLogs(req, res));
-  app.get('/api/logs/:userId/:logId', requireAuth, (req, res) => logs.getPlayerLogs(req, res));
+  app.get('/api/logs/:userId/', requireAuth, (req, res) => logs.getPlayerLogs(req, res));
   app.put('/api/logs/:userId/:logId', requireAuth, (req, res) => logs.updateLogEntry(req, res));
 };

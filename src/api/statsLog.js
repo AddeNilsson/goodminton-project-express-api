@@ -12,9 +12,9 @@ export const getPlayerLogs = async (req, res) => {
 
 export const updateLogEntry = async (req, res) => {
   try {
-    const logUpdate = await StatsLog.updateOne(
+    const logUpdate = await StatsLog.findOneAndUpdate(
       { _id: req.params.logId },
-      { reverted: true, revertable: false },
+      { reverted: true, revertable: false, touched: Date.now() },
       { new: true },
     );
     res.send(logUpdate);

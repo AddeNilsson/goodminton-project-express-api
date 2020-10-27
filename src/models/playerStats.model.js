@@ -35,7 +35,7 @@ const PlayerStatsSchema = new mongoose.Schema({
     default: 0,
   },
   touched: {
-    type: Date,
+    type: Date, // TODO: change? This casts timestamp into a date..
     required: true,
   },
 });

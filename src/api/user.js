@@ -24,7 +24,7 @@ export const signUp = async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.findOne({ email: req.body.email }); // find an existing user
-  if (user) return res.status(400).send('User already registered.');
+  if (user) return res.status(400).send({ error: 'User already registered.' });
 
   user = new User({
     name: req.body.name,
@@ -48,6 +48,7 @@ export const signUp = async (req, res) => {
     _id: user._id,
     name: user.name,
     email: user.email,
+    token,
   });
 };
 

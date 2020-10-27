@@ -9,17 +9,17 @@ export const getStats = async (req, res) => {
 
 export const getPlayerStats = async (req, res) => {
   const stats = await PlayerStats.find({ userId: req.params.userId });
-  res.send(stats);
+  res.send(stats[0]);
 };
 
 /** UPDATE */
 export const updatePlayerStats = async (req, res) => {
   const targetId = req.params.userId; // Check so user token is same as target
-  if (req.user._id !== targetId) return res.status(400).send('User missmatch');
+  if (req.user._id !== targetId) return res.status(400).send({ error: 'User missmatch' });
 
   const payload = req.body;
   const { error } = validatePlayerStats(payload);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ error: error.details[0].message });
 
   const target = await PlayerStats.findOne({ userId: targetId });
   const newStats = payload.revert
@@ -34,7 +34,7 @@ export const updatePlayerStats = async (req, res) => {
     return res.send(updated);
   } catch (e) {
     console.error(e);
-    return res.status(400).send('Error Updating Stats');
+    return res.status(400).send({ error: 'Error Updating Stats' });
   }
 };
 

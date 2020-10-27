@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi, { number } from 'joi';
 import mongoose from 'mongoose';
 
 const StatsLogSchema = new mongoose.Schema({
@@ -32,6 +32,14 @@ const StatsLogSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  created: {
+    type: Number,
+    default: Date.now(),
+  },
+  touched: {
+    type: Number,
+    default: Date.now(),
+  },
 });
 
 export const StatsLog = mongoose.model('StatsLog', StatsLogSchema);
@@ -45,6 +53,7 @@ export const createLog = ({
     regLost: lost,
     regWalkOvers: walkOvers,
     touched: Date.now(),
+    created: Date.now(),
   });
   log.save();
 };
@@ -56,6 +65,8 @@ export const validateStatsLog = (stats) => {
     regWalkOvers: Joi.number().min(0).required(),
     revertable: Joi.boolean(),
     reverted: Joi.number(),
+    created: Joi.number(),
+    touched: Joi.number(),
   };
 
   return Joi.validate(stats, schema);

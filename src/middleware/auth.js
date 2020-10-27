@@ -6,7 +6,7 @@ const requireAuth = (req, res, next) => {
   const token = req.headers['x-access-token'] || req.headers['authorization']; // eslint-disable-line
 
   // if no token found, return error res
-  if (!token) return res.status(401).send('Access denied. No token provided.');
+  if (!token) return res.status(401).send({ error: 'Access denied. No token provided.' });
 
   try {
     // if can verify the token, set req.user and pass to next middleware
